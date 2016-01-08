@@ -2,9 +2,12 @@
 A Java implementation of Minesweeper complete with custom graphics, game saving/loading, and command line parameters.
 
 ## Building
-This project assumes that your .class files will be placed in a folder at the same level as the assets folder. For instance, I have a "Minesweeper" folder which contains "assets", "src", and "build" folders. Both "assets" and "src" are exactly as they are here on GitHub and the "build" folder contains all of the .class files.
+This project assumes that your .class files will be placed in a folder at the same level as the assets folder. For instance, I have a "Minesweeper" folder which contains "assets", "src", and "build" folders. Both "assets" and "src" are exactly as they are here on GitHub and the "build" folder contains all of the .class files. To achieve this same file structure you can simply navigate to the “src” folder in a command prompt and type the following:
+~~~
+javac Minesweeper.java -d "..\build"
+~~~
 
-This hierarchy is due to the fact that the "Tile" class searches up one directory relative from its current location for the "assets" folder for the images contained within. If you wish to change the location of the assets and thus negate the need for a build folder then you must update the constants "MINE_IMG_PATH" and "FLAG_IMG_PATH" at lines 22 and 23 in Tile.java.
+This hierarchy is due to the fact that the "Tile" class searches up one directory relative from its current location for the "assets" folder for the images contained within. If you wish to change the location of the assets and thus negate the need for a "build" folder then you must update the constants "MINE_IMG_PATH" and "FLAG_IMG_PATH" at lines 22 and 23 in Tile.java.
 
 ## Running
 Minesweeper must be launched from the command line. To get a basic game running simply navigate to the Minesweeper.class file and run:
