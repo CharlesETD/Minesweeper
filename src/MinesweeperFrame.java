@@ -5,6 +5,7 @@
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -106,9 +107,22 @@ public class MinesweeperFrame extends JFrame implements ActionListener {
 	private void loadGame () {
 	
 		int fileChooserReturnValue = fileBrowser.showOpenDialog (this);
+		File saveFile = null;
+		String filename = null;
+		
 		if (fileChooserReturnValue == JFileChooser.APPROVE_OPTION) {
 			
-			if (!game.load (fileBrowser.getSelectedFile())) {
+			saveFile = fileBrowser.getSelectedFile ();
+			filename = saveFile.getName ();
+			
+			if (filename.indexOf (".") == -1) {
+		
+				saveFile = new File (filename + "." + MinesweeperGame.getFileExtension ());
+				filename = saveFile.getName ();
+			
+			}
+			
+			if (!game.load (saveFile)) {
 			
 				JOptionPane.showMessageDialog (this,"Could not load game.");
 			
@@ -124,9 +138,22 @@ public class MinesweeperFrame extends JFrame implements ActionListener {
 	private void saveGame () {
 	
 		int fileChooserReturnValue = fileBrowser.showSaveDialog (this);
+		File saveFile = null;
+		String filename = null;
+		
 		if (fileChooserReturnValue == JFileChooser.APPROVE_OPTION) {
 
-			if (!game.save (fileBrowser.getSelectedFile())) {
+			saveFile = fileBrowser.getSelectedFile ();
+			filename = saveFile.getName ();
+			
+			if (filename.indexOf (".") == -1) {
+		
+				saveFile = new File (filename + "." + MinesweeperGame.getFileExtension ());
+				filename = saveFile.getName ();
+			
+			}
+		
+			if (!game.save (saveFile)) {
 				
 				JOptionPane.showMessageDialog (this,"Could not save to file.");
 				

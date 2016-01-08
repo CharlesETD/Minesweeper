@@ -181,7 +181,7 @@ public class MinesweeperGame {
 	 * Gets the file extension used to save games.
 	 * @return Returns FILE_EXTENSION.
 	 */
-	public String getFileExtension () {
+	public static String getFileExtension () {
 	
 		return FILE_EXTENSION;
 	
@@ -339,6 +339,13 @@ public class MinesweeperGame {
 		BufferedInputStream bufferedInStream = null;
 		ObjectInputStream objectStream = null;
 		
+		if (filename.indexOf (".") == -1) {
+		
+			saveFile = new File (filename + "." + FILE_EXTENSION);
+			filename = saveFile.getName ();
+		
+		}
+		
 		if (saveFile.exists () && saveFile.canRead () && (filename.substring (filename.indexOf ("."))).equals ("." + FILE_EXTENSION)) {
 		
 			try {
@@ -399,7 +406,14 @@ public class MinesweeperGame {
 		explored
 		*/
 	
-		if (filename.indexOf (".") == -1 || filename.substring (filename.indexOf (".")).equals ("." + FILE_EXTENSION)) {
+		if (filename.indexOf (".") == -1) {
+		
+			saveFile = new File (filename + "." + FILE_EXTENSION);
+			filename = saveFile.getName ();
+		
+		}
+	
+		if (filename.substring (filename.indexOf (".")).equals ("." + FILE_EXTENSION)) {
 		
 			try {
 		
