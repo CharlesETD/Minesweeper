@@ -23,6 +23,7 @@ public class MinesweeperPanel extends JPanel {
 	private JLabel statusLabel;
 	private int mineCount;
 	private String status;
+	private Tile [] tiles;
 	
 	// Methods *************************************************************************
 	
@@ -35,30 +36,64 @@ public class MinesweeperPanel extends JPanel {
 	public MinesweeperPanel (MinesweeperFrame parent) {
 	
 		frame = parent;
+		tiles = null;
+		gridPanel = null;
 		
-		// Number of tiles must be updated since the game may choose to change it
-		int numberOfTiles = (int)Math.pow (frame.getGame ().getSquareLength (), 2.0);
-		gridPanel = new JPanel (new GridLayout (frame.getGame ().getSquareLength (), frame.getGame ().getSquareLength ()));
-		
-		for (int i = 0; i < numberOfTiles; i++) {
-		
-			Tile tempTile = new Tile (i, this);
-			tempTile.addMouseListener (new MouseHandler ());
-			gridPanel.add (tempTile);
-		
-		}
+		mineLable = new JLabel ("Mines: "+ Integer.toString (mineCount));
+		statusLabel = new JLabel ("Careful!", SwingConstants.CENTER);
 		
 		setLayout (new BorderLayout ());
 		
-		mineCount = getGame ().getEstimatedNumberOfMines ();
-		mineLable = new JLabel ("Mines: "+ Integer.toString (mineCount));
-		
-		status = "Careful!";
-		statusLabel = new JLabel ("Careful!", SwingConstants.CENTER);
-		
 		add (mineLable, BorderLayout.SOUTH);
 		add (statusLabel, BorderLayout.NORTH);
+		
+		reset ();
+	
+	}
+	
+	/**
+	 * Resets the panel.
+	 */
+	public void reset () {
+	
+		int numberOfTiles = 0;
+	
+		if (tiles != null) {
+		
+			for (int i = 0; i < numberOfTiles; i++) {
+		
+				gridPanel.remove (tiles[i]);
+		
+			}
+		
+		}
+		
+		if (gridPanel != null) {
+		
+			remove (gridPanel);
+		
+		}
+		
+		numberOfTiles = (int)Math.pow (frame.getGame ().getSquareLength (), 2.0);
+		gridPanel = new JPanel (new GridLayout (frame.getGame ().getSquareLength (), frame.getGame ().getSquareLength ()));
+		
+		tiles = new Tile [numberOfTiles];
+		
+		for (int i = 0; i < numberOfTiles; i++) {
+		
+			tiles[i] = new Tile (i, this);
+			tiles[i].addMouseListener (new MouseHandler ());
+			gridPanel.add (tiles[i]);
+		
+		}
+		
+		mineCount = getGame ().getEstimatedNumberOfMines ();
+		
+		status = "Careful!";
+		
 		add (gridPanel, BorderLayout.CENTER);
+		
+		repaint ();
 	
 	}
 	
@@ -81,12 +116,10 @@ public class MinesweeperPanel extends JPanel {
 	 */
 	public MinesweeperGame getGame () {
 	
-	
-	
 		return frame.getGame ();
 	
 	}
-
+	
 	/**
 	 * Handles button presses for the game.
 	 */

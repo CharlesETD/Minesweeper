@@ -3,6 +3,13 @@
 // Created:		2/13/15
 // Assignment:	1.6
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -21,68 +28,36 @@ public class MinesweeperGame {
 	private long stopTime;
 	
 	public enum GameState { PLAYING, GAME_OVER, WON }
+	public enum Difficulty { EASY, INTERMEDIATE, EXPERT }
 	private GameState gameState;
 	
 	// Enums with specific values are a pain in Java 
 	public static final int MINE = -1; // This could be useful for outside classes to know
 	public static final int FLAGGED = -2; // This could be useful for outside classes to know
 	public static final int UNEXPLORED = -3; // This could be useful for outside classes to know
-	private static final int DEFAULT_NUMBER_OF_TILES = 144;
-	private static final double DEFAULT_MINE_PROBABILITY = 0.3;
+	
+	private static final int EASY_NUMBER_OF_TILES = 9;
+	private static final double EASY_MINE_PROBABILITY = 0.123456789;
+	
+	private static final int INTERMEDIATE_NUMBER_OF_TILES = 16;
+	private static final double INTERMEDIATE_MINE_PROBABILITY = 0.15625;
+	
+	private static final int EXPERT_NUMBER_OF_TILES = 22;
+	private static final double EXPERT_MINE_PROBABILITY = 0.20661157;
+	
+	private static final String FILE_EXTENSION = "msg";
 	
 	// Methods *************************************************************************
 	
 	/**
 	 * Ctor
-	 * @param Number of tiles per column and row or 0 for default
+	 * @param Number of tiles or 0 for default
 	 * @param Probability a tile is a mine or -1.0 for default
 	 * @param Random seed to use or -1 for variable seed
 	 */
 	public MinesweeperGame (int numberOfTiles, double mineProbability, long debugSeed) {
 	
-		numberOfMines = 0;
-		numberOfTilesExplored = 0;
-		gameState = GameState.PLAYING;
-	
-		if (numberOfTiles < 1) {
-		
-			numberOfTiles = DEFAULT_NUMBER_OF_TILES;
-		
-		} else {
-		
-			numberOfTiles = numberOfTiles * numberOfTiles;
-		
-		}
-		
-		if (mineProbability < 0.0) {
-		
-			this.mineProbability = DEFAULT_MINE_PROBABILITY;
-		
-		} else {
-		
-			this.mineProbability = mineProbability;
-		
-		}
-		
-		if (debugSeed == -1) {
-		
-			this.randomSeed = System.currentTimeMillis ();
-		
-		} else {
-		
-			this.randomSeed = debugSeed;
-		
-		}
-		
-		squareLength = (int)Math.sqrt (numberOfTiles);
-		
-		gameGrid = new int [numberOfTiles];
-		explored = new boolean [numberOfTiles];
-		propogateGameGrid ();
-		
-		flags = new ArrayList<Integer> (numberOfMines);
-		
-		startTime = System.currentTimeMillis ();
+		reset (numberOfTiles, mineProbability, debugSeed);
 	
 	}
 	
@@ -188,7 +163,7 @@ public class MinesweeperGame {
 	 */
 	public float getGameTime () {
 
-		return (System.currentTimeMillis () -startTime) / 1000.0f;
+		return (System.currentTimeMillis () - startTime) / 1000.0f;
 
 	}	
 	
@@ -198,9 +173,19 @@ public class MinesweeperGame {
 	 */
 	public float getFinalTime () {
 
-		return (stopTime -startTime) / 1000.0f;
+		return (stopTime - startTime) / 1000.0f;
 
 	}	
+	
+	/**
+	 * Gets the file extension used to save games.
+	 * @return Returns FILE_EXTENSION.
+	 */
+	public String getFileExtension () {
+	
+		return FILE_EXTENSION;
+	
+	}
 	
 	/**
 	 * Prints the game board to the console
@@ -319,6 +304,194 @@ public class MinesweeperGame {
 	}
 	
 	/**
+	 * Creates a new game with the given difficulty.
+	 * @param difficulty of the game
+	 */
+	public void newGame (Difficulty difficulty) {
+	
+		switch (difficulty) {
+		
+		case EASY:
+			reset (EASY_NUMBER_OF_TILES, EASY_MINE_PROBABILITY, -1);
+			break;
+			
+		case INTERMEDIATE:
+			reset (INTERMEDIATE_NUMBER_OF_TILES, INTERMEDIATE_MINE_PROBABILITY, -1);
+			break;
+			
+		case EXPERT:
+			reset (EXPERT_NUMBER_OF_TILES, EXPERT_MINE_PROBABILITY, -1);
+			break;
+		
+		}
+	
+	}
+	
+	/**
+	 * Loads a game from the given file.
+	 * @param saveFile to load from.
+	 * @return false if failed to load.
+	 */
+	public boolean load (File saveFile) {
+	
+		String filename = saveFile.getName ();
+		FileInputStream inStream = null;
+		BufferedInputStream bufferedInStream = null;
+		ObjectInputStream objectStream = null;
+		
+		if (saveFile.exists () && saveFile.canRead () && (filename.substring (filename.indexOf ("."))).equals ("." + FILE_EXTENSION)) {
+		
+			try {
+			
+				inStream = new FileInputStream (saveFile);
+				bufferedInStream = new BufferedInputStream (inStream);
+				objectStream = new ObjectInputStream (bufferedInStream);
+			
+				mineProbability = (Double) (objectStream.readObject ());
+				randomSeed = (Long) (objectStream.readObject ());
+				numberOfMines = (Integer) (objectStream.readObject ());
+				squareLength = (Integer) (objectStream.readObject ());
+				numberOfTilesExplored = (Integer) (objectStream.readObject ());
+				startTime = System.currentTimeMillis () - (Long) (objectStream.readObject ());
+				stopTime = (Long) (objectStream.readObject ());
+				gameState = (GameState) (objectStream.readObject ());
+				flags = castObjectToArrayList (objectStream.readObject ());
+				gameGrid = (int []) (objectStream.readObject ());
+				explored = (boolean []) (objectStream.readObject ());
+			
+			} catch (Exception e) {
+			
+				return false;
+			
+			}
+		
+			return true;
+		
+		}
+		
+		return false;
+	
+	}
+	
+	/**
+	 * Saves a game to the given file.
+	 * @param saveFile to save to.
+	 * @return false if failed to save.
+	 */
+	public boolean save (File saveFile) {
+	
+		String filename = saveFile.getName ();
+		FileOutputStream outStream = null;
+		BufferedOutputStream bufferedOutStream = null;
+		ObjectOutputStream objectStream = null;
+	
+		/*
+		mineProbability
+		randomSeed
+		numberOfMines
+		squareLength
+		numberOfTilesExplored
+		startTime
+		stopTime
+		gameState
+		flags
+		gameGrid
+		explored
+		*/
+	
+		if (filename.indexOf (".") == -1 || filename.substring (filename.indexOf (".")).equals ("." + FILE_EXTENSION)) {
+		
+			try {
+		
+				outStream = new FileOutputStream (saveFile);
+				bufferedOutStream = new BufferedOutputStream (outStream);
+				objectStream = new ObjectOutputStream (bufferedOutStream);
+			
+				objectStream.writeObject (new Double (mineProbability));
+				objectStream.writeObject (new Long (randomSeed));
+				objectStream.writeObject (new Integer (numberOfMines));
+				objectStream.writeObject (new Integer (squareLength));
+				objectStream.writeObject (new Integer (numberOfTilesExplored));
+				objectStream.writeObject (new Long (System.currentTimeMillis () - startTime));
+				objectStream.writeObject (new Long (stopTime));
+				objectStream.writeObject (gameState);
+				objectStream.writeObject (flags);
+				objectStream.writeObject (gameGrid);
+				objectStream.writeObject (explored);
+				
+				bufferedOutStream.flush ();
+			
+			} catch (Exception e) {
+			
+				return false;
+			
+			}
+		
+			return true;
+		
+		}
+		
+		return false;
+	
+	}
+	
+	/**
+	 * newGame
+	 * @param Number of tiles or 0 for default
+	 * @param Probability a tile is a mine or -1.0 for default
+	 * @param Random seed to use or -1 for variable seed
+	 */
+	public void reset (int numberOfTiles, double mineProbability, long debugSeed) {
+	
+		numberOfMines = 0;
+		numberOfTilesExplored = 0;
+		gameState = GameState.PLAYING;
+		stopTime = -1;
+		startTime = 0;
+	
+		if (numberOfTiles < 1) {
+		
+			numberOfTiles = INTERMEDIATE_NUMBER_OF_TILES * INTERMEDIATE_NUMBER_OF_TILES;
+		
+		} else {
+		
+			numberOfTiles = numberOfTiles * numberOfTiles;
+		
+		}
+		
+		if (mineProbability < 0.0) {
+		
+			this.mineProbability = INTERMEDIATE_MINE_PROBABILITY;
+		
+		} else {
+		
+			this.mineProbability = mineProbability;
+		
+		}
+		
+		if (debugSeed == -1) {
+		
+			this.randomSeed = System.currentTimeMillis ();
+		
+		} else {
+		
+			this.randomSeed = debugSeed;
+		
+		}
+		
+		squareLength = (int)Math.sqrt (numberOfTiles);
+		
+		gameGrid = new int [numberOfTiles];
+		explored = new boolean [numberOfTiles];
+		propogateGameGrid ();
+		
+		flags = new ArrayList<Integer> (numberOfMines);
+		
+		startTime = System.currentTimeMillis ();
+	
+	}
+	
+	/**
 	 * Fills the game grid with a random number of mines and calculates the adjacent mines for each tile
 	 */
 	private void propogateGameGrid () {
@@ -382,6 +555,19 @@ public class MinesweeperGame {
 			
 		}
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private ArrayList<Integer> castObjectToArrayList (Object obj) {
+	
+		if (obj instanceof ArrayList) {
+
+			return (ArrayList<Integer>)(obj);
+			
+		}
+		
+		return null;
+	
 	}
 	
 	/**

@@ -19,8 +19,8 @@ public class Tile extends JButton {
 	private ImageIcon mineImage;
 	private ImageIcon flagImage;
 	
-	private static final String MINE_IMG_PATH = "mine.png";
-	private static final String FLAG_IMG_PATH = "flag.png";
+	private static final String MINE_IMG_PATH = "../assets/mine.png";
+	private static final String FLAG_IMG_PATH = "../assets/flag.png";
 	
 	// Methods *************************************************************************
 	
