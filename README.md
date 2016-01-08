@@ -50,3 +50,5 @@ To save the current game simply click the "Save" button and enter a name for you
 
 ## Exiting
 Simply click either the "Quit" button or the red button on the window to exit. Note that progress will not automatically be saved.
+
+© Copyright 2015 Charles Duncan (CharlesETD@gmail.com)
