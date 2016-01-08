@@ -68,7 +68,7 @@ public class Minesweeper {
 				
 				break;
 				
-				case "-debug":
+				case "-seed":
 					
 					if (i + 1 < args.length) {
 					
@@ -78,14 +78,14 @@ public class Minesweeper {
 						
 						} catch (NumberFormatException e) {
 						
-							System.out.println ("Usage: java Minesweeper -debug <integer value>");
+							System.out.println ("Usage: java Minesweeper -seed <integer value>");
 							return;
 						
 						}
 					
 					} else {
 					
-						System.out.println ("Usage: java Minesweeper -debug <integer value>");
+						System.out.println ("Usage: java Minesweeper -seed <integer value>");
 						return;
 					
 					}
@@ -95,11 +95,11 @@ public class Minesweeper {
 				default:
 				case "-help":
 				
-					System.out.println ("Usage: java Minesweeper [-options]");
+					System.out.println ("Usage: java Minesweeper -option1 param1 -option2 param2 ...");
 					System.out.println ("Where options include:");
 					System.out.println ("\t-numTiles <integer value>\tThe number of tiles wide and tall");
 					System.out.println ("\t-mineProb <decimal value>\tThe probability of a tile being a mine");
-					System.out.println ("\t-debug <integer value>\t\tThe exact random seed to use");
+					System.out.println ("\t-seed <integer value>\t\tThe exact random seed to use");
 					System.out.println ("\t-help\t\t\t\tPrints the help message");
 					return;
 				
