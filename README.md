@@ -4,7 +4,7 @@ A Java implementation of Minesweeper complete with custom graphics, game saving/
 ## Building
 This project assumes that your .class files will be placed in a folder at the same level as the assets folder. For instance, I have a "Minesweeper" folder which contains "assets", "src", and "build" folders. Both "assets" and "src" are exactly as they are here on GitHub and the "build" folder contains all of the .class files.
 
-This heirarchy is due to the fact that the "Tile" class searches up one directory relative from its current location for the "assets" folder for the images contained within. If you wish to change the location of the assets and thus negate the need for a build folder then you must update the constants "MINE_IMG_PATH" and "FLAG_IMG_PATH" at lines 22 and 23 in Tile.java.
+This hierarchy is due to the fact that the "Tile" class searches up one directory relative from its current location for the "assets" folder for the images contained within. If you wish to change the location of the assets and thus negate the need for a build folder then you must update the constants "MINE_IMG_PATH" and "FLAG_IMG_PATH" at lines 22 and 23 in Tile.java.
 
 ## Running
 Minesweeper must be launched from the command line. To get a basic game running simply navigate to the Minesweeper.class file and run:
@@ -43,7 +43,7 @@ To aide your memory you may place "flags" on tiles you suspect to contain mines.
 The game is won when all "safe" tiles have been revealed. Tiles containing mines do not have to be flagged to win. After a victory or loss your total time will be displayed at the top of the screen.
 
 ## Saving/Loading a Game
-To save the current game simply click the "Save" button and enter a name for your saved game. To load a game click "Load" and enter the name of the game to load. Be warned that saving and loading a game may be veiwed as cheating since it allows you to reveal the field, take note of mine positions, reload, and try again.
+To save the current game simply click the "Save" button and enter a name for your saved game. To load a game click "Load" and enter the name of the game to load. Be warned that saving and loading a game may be viewed as cheating since it allows you to reveal the field, take note of mine positions, reload, and try again.
 
 ## Exiting
 Simply click either the "Quit" button or the red button on the window to exit. Note that progress will not automatically be saved.
