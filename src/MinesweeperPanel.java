@@ -1,7 +1,8 @@
-// Author:		Charles Duncan
+// Author:		Charles Duncan (CharlesETD@gmail.com)
 // Compiler:	Javac 1.7.0_02 (Java 1.7.0_60-b19)
 // Created:		2/13/15
 // Assignment:	1.6
+// © Copyright 2015 Charles Duncan
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
