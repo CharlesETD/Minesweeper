@@ -1,5 +1,5 @@
 # Minesweeper
-A Java implementation of Minesweeper complete with custom graphics, game saving/loading, and command line parameters. Originally created for assignment 1.6 of Computer Science 2 at Oklahoma State University for Dr. Crick.
+A Java implementation of Minesweeper complete with custom graphics, game saving/loading, and command line parameters. Originally created for assignment 1.6 of Computer Science 2 at Oklahoma State University for Dr. Crick. The goal of the project was to create a game of Minesweeper with a full GUI following the MVC design pattern. Other requirements included facilitating the saving and loading of games and a difficulty selection menu.
 
 ## Building
 This project assumes that your .class files will be placed in a folder at the same level as the assets folder. For instance, I have a "Minesweeper" folder which contains "assets", "src", and "build" folders. Both "assets" and "src" are exactly as they are here on GitHub and the "build" folder contains all of the .class files. To achieve this same file structure you can simply navigate to the “src” folder in a command prompt and type the following:
